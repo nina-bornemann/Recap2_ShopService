@@ -24,15 +24,9 @@ class ShopServiceTest {
 
     @Test
     void addOrderTest_whenInvalidProductId_expectNull() {
-        //GIVEN
         ShopService shopService = new ShopService();
         List<String> productsIds = List.of("1", "2");
-
-        //WHEN
-        Order actual = shopService.addOrder(productsIds);
-
-        //THEN
-        assertNull(actual);
+        assertThrows(RuntimeException.class,() -> shopService.addOrder(productsIds) );
     }
 
     @Test
@@ -49,5 +43,16 @@ class ShopServiceTest {
         List<Order> expected = List.of(o1);
         List<Order> actual = shopService.getAllOrdersOfStatus(Status.PROCESSING);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void updateOrder_isEqual() {
+        Order o1 = new Order("2", List.of(new Product("5", "Banana")), Status.PROCESSING);
+        OrderListRepo orderRepo = new OrderListRepo(new ArrayList<>(List.of(o1)));
+        ShopService shopService = new ShopService(orderRepo);
+        shopService.updateOrder("2", Status.IN_DELIVERY);
+
+        assertEquals(Status.IN_DELIVERY, orderRepo.getOrderById("2").status());
+        assertNotEquals(Status.PROCESSING, orderRepo.getOrderById("2").status());
     }
 }
