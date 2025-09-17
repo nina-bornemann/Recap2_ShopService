@@ -1,3 +1,4 @@
+import lombok.RequiredArgsConstructor;
 import lombok.With;
 
 import java.time.Instant;
